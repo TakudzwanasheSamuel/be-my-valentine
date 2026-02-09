@@ -12,10 +12,10 @@ const questionImage = PlaceHolderImages.find((img) => img.id === "love-question"
 const successImage = PlaceHolderImages.find((img) => img.id === "success-celebration");
 
 const messages = [
-  "Hey you,",
-  "I have a little question for you...",
-  "It's been on my mind for a while now.",
-  "You make my world so much brighter.",
+  "Hey My Beautiful Imbokodo❤️",
+  "I was wondering if I could ask you something, I know I'm not the best with my words...",
+  "I'm not the most romantic person and i sometimes forget to open the door for you...",
+  "but here goes nothing ...",
 ];
 
 const noMessages = [
@@ -72,6 +72,67 @@ const FloatingGardenItem: FC<{
   );
 };
 
+type FloatingPhotoShape = "circle" | "heart" | "flower" | "rounded";
+
+const FloatingPhotoItem: FC<{
+  src: string;
+  initialX: number;
+  size: number;
+  duration: number;
+  delay: number;
+  shape: FloatingPhotoShape;
+}> = ({ src, initialX, size, duration, delay, shape }) => {
+  const pixelSize = size * 64;
+
+  const shapeClass =
+    shape === "heart"
+      ? "clip-heart"
+      : shape === "flower"
+      ? "clip-flower"
+      : shape === "rounded"
+      ? "rounded-2xl"
+      : "rounded-full";
+
+  return (
+    <motion.div
+      className="absolute pointer-events-none"
+      style={{
+        left: `${initialX}%`,
+        zIndex: -1,
+      }}
+      initial={{ y: "100vh" }}
+      animate={{ y: "-10vh" }}
+      transition={{
+        delay,
+        duration,
+        repeat: Infinity,
+        ease: "linear",
+      }}
+    >
+      <motion.div
+        animate={{
+          x: ["0rem", "1.5rem", "-1.5rem", "0rem"],
+          rotate: [-5, 5, -5],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          repeatType: "mirror",
+          ease: "easeInOut",
+        }}
+      >
+        <Image
+          src={src}
+          alt="Our memory together"
+          width={pixelSize}
+          height={pixelSize}
+          className={`object-cover shadow-xl border-4 border-white/70 dark:border-white/40 ${shapeClass}`}
+        />
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const HeartBurst: FC = () => {
     const colors = ['#F4C2C2', '#B6A5C8', '#ff7aa2', '#ffb3c1'];
     const hearts = Array.from({ length: 20 }).map((_, i) => {
@@ -113,22 +174,67 @@ export default function Home() {
   const [showHeartBurst, setShowHeartBurst] = useState(false);
   const noButtonRef = useRef<HTMLButtonElement>(null);
   const [floatingGarden, setFloatingGarden] = useState<any[]>([]);
+  const [floatingPhotos, setFloatingPhotos] = useState<any[]>([]);
 
   useEffect(() => {
     const gardenEmojis = ['🦋', '🌹', '🌸', '🌷', '🌺'];
     const newFloatingGarden = Array.from({ length: 20 }).map((_, i) => {
-        const emoji = gardenEmojis[i % gardenEmojis.length];
-        return {
-            id: i,
-            emoji,
-            isButterfly: emoji === '🦋',
-            initialX: Math.random() * 95,
-            size: emoji === '🦋' ? (Math.random() * 1 + 1.5) : (Math.random() * 1.5 + 2),
-            duration: Math.random() * 10 + 10,
-            delay: Math.random() * 15,
-        };
+      const emoji = gardenEmojis[i % gardenEmojis.length];
+      return {
+        id: i,
+        emoji,
+        isButterfly: emoji === "🦋",
+        initialX: Math.random() * 95,
+        size:
+          emoji === "🦋"
+            ? Math.random() * 1 + 1.5
+            : Math.random() * 1.5 + 2,
+        duration: Math.random() * 10 + 10,
+        // Start floating almost immediately after page load
+        delay: Math.random() * 3,
+      };
     });
     setFloatingGarden(newFloatingGarden);
+
+    const rawPhotoSources = [
+      "/WdhatsApp Image 2026-02-08 at 11.38.57.jpeg",
+      "/WhatsApp Image 2026-02-08 at 11.38.56.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.08.02.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.08.03.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.08.04.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.08.07.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.08.09.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.08.11.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.08.12.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.08.14.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.08.15.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.10.54.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.10.56.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.10.58.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.11.11.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.11.13.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.11.30.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.11.32.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.11.56.jpeg",
+      "/WhatsApp Image 2026-02-09 at 12.11.58.jpeg",
+      "/WhatsApp Image 2026-02-d08 at 11.38.58.jpeg",
+      "/WshatsApp Image 2026-02-08 at 11.38.56.jpeg",
+    ];
+
+    const shapes: FloatingPhotoShape[] = ["circle", "heart", "flower", "rounded"];
+
+    const newFloatingPhotos = rawPhotoSources.map((src, index) => ({
+      id: index,
+      src,
+      shape: shapes[index % shapes.length],
+      initialX: Math.random() * 95,
+      size: Math.random() * 0.7 + 1.2,
+      duration: Math.random() * 10 + 14,
+      // Also start photos within the first few seconds
+      delay: Math.random() * 3,
+    }));
+
+    setFloatingPhotos(newFloatingPhotos);
   }, []);
 
   useEffect(() => {
@@ -209,16 +315,13 @@ export default function Home() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
             >
-                {successImage && (
-                    <Image
-                    src={successImage.imageUrl}
-                    alt={successImage.description}
-                    data-ai-hint={successImage.imageHint}
+                <Image
+                    src="/WshatsApp Image 2026-02-08 at 11.38.56.jpeg"
+                    alt="YAY! See you on Feb 14th!"
                     width={400}
                     height={500}
                     className="rounded-2xl shadow-2xl"
-                    />
-                )}
+                />
                 <h2 className="text-3xl font-bold text-primary-foreground dark:text-primary-foreground font-headline">YAY! See you on Feb 14th!</h2>
                 <p>You've made me the happiest person alive! 🎉</p>
             </motion.div>
@@ -249,16 +352,13 @@ export default function Home() {
                 )}
                 {step === 4 && (
                     <div className="flex flex-col items-center gap-4">
-                        {questionImage && (
-                            <Image
-                                src={questionImage.imageUrl}
-                                alt={questionImage.description}
-                                data-ai-hint={questionImage.imageHint}
-                                width={300}
-                                height={375}
-                                className="rounded-2xl shadow-2xl"
-                            />
-                        )}
+                                <Image
+                            src="/WdhatsApp Image 2026-02-08 at 11.38.57.jpeg"
+                            alt="Will you be my Valentine?"
+                            width={300}
+                            height={375}
+                            className="rounded-2xl shadow-2xl"
+                        />
                         <h2 className="text-2xl md:text-3xl font-bold mt-4 font-headline">Will you be my Valentine?</h2>
                         <div className="relative w-full h-24 flex items-center justify-center gap-4">
                            <Button onClick={handleYes} size="lg" className={`${getYesButtonSize()} transition-all duration-300`}>
@@ -284,6 +384,9 @@ export default function Home() {
     <main className="relative flex flex-col items-center justify-center min-h-screen w-full overflow-hidden p-4">
       {floatingGarden.map((e) => (
         <FloatingGardenItem key={e.id} {...e} />
+      ))}
+      {floatingPhotos.map((p) => (
+        <FloatingPhotoItem key={p.id} {...p} />
       ))}
       <div className="w-full max-w-md bg-white/30 dark:bg-black/30 backdrop-blur-lg rounded-2xl p-6 md:p-10 shadow-2xl text-foreground dark:text-white/90 flex items-center justify-center min-h-[300px]">
         {renderContent()}

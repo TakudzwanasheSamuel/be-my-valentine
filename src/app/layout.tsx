@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Heartfelt Proposal',
+  title: 'My Imbokodo❤️',
   description: 'Will you be my Valentine?',
 };
 
