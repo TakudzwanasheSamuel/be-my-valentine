@@ -29,27 +29,62 @@ const noMessages = [
   "Just kidding, one more try?",
 ];
 
-const FloatingEmoji: FC<{ emoji: string; top: string; left: string; duration: number; delay: number }> = ({ emoji, top, left, duration, delay }) => {
+const FloatingGardenItem: FC<{
+  emoji: string;
+  initialX: number;
+  size: number;
+  duration: number;
+  delay: number;
+  isButterfly: boolean;
+}> = ({ emoji, initialX, size, duration, delay, isButterfly }) => {
   return (
     <motion.div
-      className="absolute text-3xl md:text-4xl"
-      style={{ top, left, zIndex: -1 }}
-      animate={{
-        y: ["0%", "20%", "0%", "-20%", "0%"],
-        x: ["0%", "10%", "-10%", "10%", "0%"],
+      className="absolute pointer-events-none"
+      style={{
+        left: `${initialX}%`,
+        fontSize: `${size}rem`,
+        zIndex: -1,
       }}
+      initial={{ y: "100vh" }}
+      animate={{ y: "-10vh" }}
       transition={{
+        delay,
         duration,
         repeat: Infinity,
-        repeatType: "mirror",
-        ease: "easeInOut",
-        delay,
+        ease: "linear",
       }}
     >
-      {emoji}
+      <motion.div
+        animate={{
+          x: ["0rem", "1.5rem", "-1.5rem", "0rem"],
+          scale: isButterfly ? [0.8, 1.1, 0.8] : 1,
+        }}
+        transition={{
+          duration: isButterfly ? 2 : 4,
+          repeat: Infinity,
+          repeatType: "mirror",
+          ease: "easeInOut",
+        }}
+      >
+        {emoji}
+      </motion.div>
     </motion.div>
   );
 };
+
+const gardenEmojis = ['🦋', '🌹', '🌸', '🌷', '🌺'];
+const floatingGarden = Array.from({ length: 20 }).map((_, i) => {
+    const emoji = gardenEmojis[i % gardenEmojis.length];
+    return {
+        id: i,
+        emoji,
+        isButterfly: emoji === '🦋',
+        initialX: Math.random() * 95,
+        size: emoji === '🦋' ? (Math.random() * 1 + 1.5) : (Math.random() * 1.5 + 2),
+        duration: Math.random() * 10 + 10,
+        delay: Math.random() * 15,
+    };
+});
 
 const HeartBurst: FC = () => {
     const colors = ['#F4C2C2', '#B6A5C8', '#ff7aa2', '#ffb3c1'];
@@ -159,14 +194,6 @@ export default function Home() {
     return sizes[Math.min(noCount, sizes.length - 1)];
   };
 
-  const floatingEmojis = [
-    { emoji: '💖', top: '10%', left: '15%', duration: 15, delay: 0 },
-    { emoji: '🦋', top: '20%', left: '80%', duration: 12, delay: 2 },
-    { emoji: '✨', top: '70%', left: '10%', duration: 18, delay: 1 },
-    { emoji: '💖', top: '80%', left: '90%', duration: 14, delay: 3 },
-    { emoji: '🦋', top: '50%', left: '50%', duration: 20, delay: 0.5 },
-  ];
-
   const renderContent = () => {
     if (step === 5) {
       return (
@@ -251,8 +278,8 @@ export default function Home() {
 
   return (
     <main className="relative flex flex-col items-center justify-center min-h-screen w-full overflow-hidden p-4">
-      {floatingEmojis.map((e, i) => (
-        <FloatingEmoji key={i} {...e} />
+      {floatingGarden.map((e) => (
+        <FloatingGardenItem key={e.id} {...e} />
       ))}
       <div className="w-full max-w-md bg-white/30 dark:bg-black/30 backdrop-blur-lg rounded-2xl p-6 md:p-10 shadow-2xl text-foreground dark:text-white/90 flex items-center justify-center min-h-[300px]">
         {renderContent()}
