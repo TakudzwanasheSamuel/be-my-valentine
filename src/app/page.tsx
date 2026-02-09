@@ -72,20 +72,6 @@ const FloatingGardenItem: FC<{
   );
 };
 
-const gardenEmojis = ['🦋', '🌹', '🌸', '🌷', '🌺'];
-const floatingGarden = Array.from({ length: 20 }).map((_, i) => {
-    const emoji = gardenEmojis[i % gardenEmojis.length];
-    return {
-        id: i,
-        emoji,
-        isButterfly: emoji === '🦋',
-        initialX: Math.random() * 95,
-        size: emoji === '🦋' ? (Math.random() * 1 + 1.5) : (Math.random() * 1.5 + 2),
-        duration: Math.random() * 10 + 10,
-        delay: Math.random() * 15,
-    };
-});
-
 const HeartBurst: FC = () => {
     const colors = ['#F4C2C2', '#B6A5C8', '#ff7aa2', '#ffb3c1'];
     const hearts = Array.from({ length: 20 }).map((_, i) => {
@@ -126,6 +112,24 @@ export default function Home() {
   const [noCount, setNoCount] = useState(0);
   const [showHeartBurst, setShowHeartBurst] = useState(false);
   const noButtonRef = useRef<HTMLButtonElement>(null);
+  const [floatingGarden, setFloatingGarden] = useState<any[]>([]);
+
+  useEffect(() => {
+    const gardenEmojis = ['🦋', '🌹', '🌸', '🌷', '🌺'];
+    const newFloatingGarden = Array.from({ length: 20 }).map((_, i) => {
+        const emoji = gardenEmojis[i % gardenEmojis.length];
+        return {
+            id: i,
+            emoji,
+            isButterfly: emoji === '🦋',
+            initialX: Math.random() * 95,
+            size: emoji === '🦋' ? (Math.random() * 1 + 1.5) : (Math.random() * 1.5 + 2),
+            duration: Math.random() * 10 + 10,
+            delay: Math.random() * 15,
+        };
+    });
+    setFloatingGarden(newFloatingGarden);
+  }, []);
 
   useEffect(() => {
     if (step === 5) {
