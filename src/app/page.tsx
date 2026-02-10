@@ -12,7 +12,7 @@ const questionImage = PlaceHolderImages.find((img) => img.id === "love-question"
 const successImage = PlaceHolderImages.find((img) => img.id === "success-celebration");
 
 const messages = [
-  "Hey My Beautiful Imbokodo❤️",
+  "Hey My Everything❤️",
   "I was wondering if I could ask you something, I know I'm not the best with my words...",
   "I'm not the most romantic person and i sometimes forget to open the door for you...",
   "but here goes nothing ...",
@@ -322,6 +322,8 @@ export default function Home() {
                     height={500}
                     className="rounded-2xl shadow-2xl"
                 />
+                {/* Romantic song that starts playing as soon as the success section appears */}
+                <audio src="/song.mp3" autoPlay className="hidden" />
                 <h2 className="text-3xl font-bold text-primary-foreground dark:text-primary-foreground font-headline">YAY! See you on Feb 14th!</h2>
                 <p>You've made me the happiest person alive! 🎉</p>
             </motion.div>
